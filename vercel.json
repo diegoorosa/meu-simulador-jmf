@@ -2,7 +2,7 @@
   "version": 2,
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/generate-analysis",
       "dest": "/api/generate-analysis.js"
     },
     {
