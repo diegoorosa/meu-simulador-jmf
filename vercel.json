@@ -1,13 +1,8 @@
 {
-  "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/generate-analysis.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/:path((?!api/|.*\\.\\w+).*)",
+      "destination": "/index.html"
     }
   ]
 }
