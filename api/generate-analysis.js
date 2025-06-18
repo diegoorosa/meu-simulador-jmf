@@ -7,7 +7,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 async function sendLeadToFormspree(data, endpointUrl) {
     if (!endpointUrl) {
         console.error("URL do Formspree não configurada no servidor.");
-        // Não retornamos um erro ao usuário, mas logamos o problema.
         return;
     }
 
@@ -39,7 +38,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Dados do formulário incompletos." });
   }
 
-  // Lê as chaves secretas das variáveis de ambiente do servidor
   const apiKey = process.env.GEMINI_API_KEY;
   const formspreeEndpoint = process.env.FORMSPREE_ENDPOINT;
 
@@ -51,6 +49,7 @@ export default async function handler(req, res) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
+    // ATUALIZAÇÃO: Adicionado o pedido do aviso legal no final do prompt.
     const prompt = `Aja como um contador consultor especialista em abertura de empresas no Brasil. Com base nos dados a seguir, gere uma análise preliminar OBJETIVA e CLARA em 3 partes, usando markdown para formatação (negrito para títulos).
     
     **Dados do Cliente:**
@@ -71,7 +70,11 @@ export default async function handler(req, res) {
     **3. Próximos Passos Essenciais:**
     Liste 3 a 4 passos práticos que o empreendedor deve tomar para prosseguir com a abertura da empresa, como "Consulta de Viabilidade na Junta Comercial" e "Definição do Capital Social".
     
-    Conclua a análise com uma frase amigável, informando que os detalhes finais serão fornecidos na proposta comercial.`;
+    Conclua a análise com uma frase amigável, informando que os detalhes finais serão fornecidos na proposta comercial.
+
+    **IMPORTANTE:** Ao final de TODA a resposta, adicione o seguinte aviso legal, sem nenhuma alteração:
+    ---
+    *Aviso Legal: Esta análise é uma simulação preliminar gerada por Inteligência Artificial com base nos dados fornecidos. Ela não substitui a consultoria de um profissional de contabilidade e está sujeita a confirmação. Os valores e regimes sugeridos são estimativas e podem variar.*`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -84,7 +87,6 @@ export default async function handler(req, res) {
         "Análise Gerada pela IA": analiseGerada
     };
     
-    // **NOVA ETAPA**: O próprio backend envia o email para você.
     await sendLeadToFormspree(leadData, formspreeEndpoint);
     
     const respostaParaSite = {
@@ -96,7 +98,6 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("Erro ao chamar a API do Gemini:", error);
     
-    // Mesmo se o Gemini falhar, ainda enviamos o lead para você não o perder.
     const leadData = {
         subject: `Lead com FALHA NO GEMINI (Simulador JMF): ${formData.nome}`,
         ...formData,
