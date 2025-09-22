@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Abertura de Empresa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
@@ -121,7 +122,8 @@
                     throw new Error(result.error || 'Erro desconhecido do servidor.');
                 }
 
-                resultadoAnalise.textContent = result.analise;
+                const htmlAnalise = marked.parse(result.analise); // Converte o texto para HTML
+                resultadoAnalise.innerHTML = htmlAnalise;         // Exibe o resultado formatado
 
             } catch (error) {
                 console.error('Erro no processo:', error);
