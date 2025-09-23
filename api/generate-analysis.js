@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     - **Passo 4: Chame para a Ação.** Reforce que a equipe da JMF Contabilidade tem a expertise para ajudar a definir o(s) código(s) perfeito(s) para o negócio dele.
 
     **3. Próximos Passos Essenciais:**
-    - Mantenha a lista de passos (JUCESC, Definição de CNAE com a JMF, Certificado Digital).
+    - Mantenha a lista de passos práticos, incluindo a **JUCESC**, a importância da definição correta do CNAE (que você acabou de analisar) e a emissão do **Certificado Digital (e-CNPJ)**, mencionando que a JMF Contabilidade cuida disso através de parceiros.
 
     **Conclusão e Aviso Legal:**
     - Conclua com uma frase amigável e adicione o aviso legal completo.
@@ -132,4 +132,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Falha ao gerar a análise." });
   }
 }
+
 
