@@ -60,14 +60,14 @@ export default async function handler(req, res) {
     const greeting = getGreeting();
     
     // AÇÃO #2: Usando o novo PROMPT "BLINDADO" com regras claras
-    const prompt = `Aja como um contador consultor sênior da JMF Contabilidade. Seja preciso, confiável e demonstre profundo conhecimento da realidade de Santa Catarina.
+     const prompt = `Aja como um contador consultor sênior da JMF Contabilidade. Seja preciso, confiável e demonstre profundo conhecimento da realidade de Santa Catarina.
 
     **Regras e Contexto Contábil Mandatório para Santa Catarina (Use como verdade absoluta):**
-    - **Teto do MEI:** O teto de faturamento anual do MEI é R$ 81.000,00. Qualquer valor acima disso o desqualifica.
+    - **Teto do MEI:** O teto de faturamento anual do MEI é R$ 81.000,00.
     - **Anexos do Simples Nacional (Regra Geral):**
-      - **Anexo I:** Para atividades de Comércio (Ex: ecommerce, lojas de varejo). A alíquota inicial é 4%.
-      - **Anexo III:** Para a maioria das atividades de Serviços (Ex: manutenção, agências de viagem, academias). A alíquota inicial é 6%.
-      - **Anexo V:** Para serviços de natureza intelectual, técnica e científica (Ex: engenharia, consultoria, publicidade, desenvolvimento de software). A alíquota inicial é 15.5%. O Fator R pode mover algumas dessas atividades para o Anexo III.
+      - **Anexo I:** Para atividades de Comércio (Ex: lojas, ecommerce). Alíquota inicial de 4%.
+      - **Anexo III:** Para a maioria das atividades de Serviços (Ex: academias, oficinas, agências de viagem, fisioterapia). Alíquota inicial de 6%.
+      - **Anexo V:** Para serviços de natureza intelectual, técnica e científica (Ex: consultoria, publicidade, engenharia, desenvolvimento de software). Alíquota inicial de 15.5%. Algumas atividades podem ir para o Anexo III se o Fator R for atendido.
 
     **Análise Requerida (Siga esta lógica usando as regras acima):**
 
@@ -76,28 +76,31 @@ export default async function handler(req, res) {
 
     **Dados do Cliente:**
     - Nome: ${formData.nome}
-    - Atividade Principal: ${formData.atividade}
-    - Cidade da Sede: ${formData.cidade}
-    - Faturamento Mensal Estimado: R$ ${formData.faturamentoMensal || 'Não informado'}
+    - Atividade: ${formData.atividade}
+    - Cidade: ${formData.cidade}
+    - Faturamento Mensal: R$ ${formData.faturamentoMensal || 'Não informado'}
     - Sócios: ${formData.socios}
 
     **1. Natureza Jurídica:**
-    - Calcule o faturamento anual.
-    - Compare-o estritamente com o teto do MEI de R$ 81.000,00. Se ultrapassar, descarte o MEI e explique o porquê.
-    - Recomende SLU para 1 sócio (acima do teto MEI) ou LTDA para 2+ sócios, explicando a proteção patrimonial.
+    - Calcule o faturamento anual. Compare-o com o teto do MEI. Se ultrapassar, descarte o MEI e explique o porquê.
+    - Recomende SLU para 1 sócio (acima do teto MEI) ou LTDA para 2+ sócios.
 
-    **2. Regime Tributário (Análise Guiada):**
-    - Para a atividade "${formData.atividade}", identifique o Anexo do Simples Nacional **usando as regras mandatórias definidas no início deste prompt.**
-    - Exemplo de raciocínio: "Como sua atividade é ecommerce, ela se enquadra em Comércio, que pertence ao Anexo I do Simples Nacional."
-    - Informe a alíquota inicial correta para o Anexo identificado (Ex: 4% para Anexo I).
-    - Mencione o CNAE mais comum para a atividade, mas deixe claro que a confirmação é um passo da consultoria. Para "ecommerce", o CNAE comum é 47.91-7/01.
+    **2. Regime Tributário (Análise Universal e Consultiva):**
+    - **Passo 1: Classifique a Atividade.** Analise a atividade ("${formData.atividade}") e, usando as "Regras Mandatórias", classifique-a em uma das três categorias: Comércio (Anexo I), Serviços (Anexo III), ou Serviços Intelectuais/Técnicos (Anexo V).
+    - **Passo 2: Informe a Base.** Com base na classificação, informe o Anexo do Simples Nacional e a alíquota inicial. Se for Anexo V, mencione a possibilidade do Fator R.
+    - **Passo 3: Eduque e Exemplifique.**
+      - **NÃO afirme um CNAE específico como sendo "o correto".**
+      - Explique que a definição exata do CNAE é um passo crucial da consultoria e depende de detalhes da operação.
+      - Para a categoria identificada, forneça **um ou dois exemplos de CNAEs plausíveis** para ilustrar o conceito, deixando claro que são apenas exemplos.
+      - Por exemplo, se a atividade for "agência de marketing", classifique como Serviços (Anexo III/V), explique sobre o Fator R e dê como exemplos o CNAE 7311-4/00 (Agências de publicidade) e 7319-0/04 (Consultoria em publicidade).
+      - Se a atividade for "venda de sapatos", classifique como Comércio (Anexo I) e dê como exemplo o CNAE 4782-2/01 (Comércio varejista de calçados).
+    - **Passo 4: Chame para a Ação.** Reforce que a equipe da JMF Contabilidade tem a expertise para ajudar a definir o(s) código(s) perfeito(s) para o negócio dele.
 
     **3. Próximos Passos Essenciais:**
-    - Mantenha a lista de passos: JUCESC, definição do CNAE com ajuda da JMF, e o Certificado Digital com os parceiros da JMF.
+    - Mantenha a lista de passos (JUCESC, Definição de CNAE com a JMF, Certificado Digital).
 
     **Conclusão e Aviso Legal:**
-    - Conclua com a frase amigável sobre a proposta comercial.
-    - Adicione o aviso legal completo no final.
+    - Conclua com uma frase amigável e adicione o aviso legal completo.
 
     ---
     *Aviso Legal: Esta análise é uma simulação preliminar gerada por Inteligência Artificial com base nos dados fornecidos. Ela não substitui a consultoria de um profissional de contabilidade e está sujeita a confirmação. Os valores, CNAEs e regimes sugeridos são estimativas e podem variar.*`;
@@ -129,3 +132,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Falha ao gerar a análise." });
   }
 }
+
