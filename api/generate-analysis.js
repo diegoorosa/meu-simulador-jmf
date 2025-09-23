@@ -62,18 +62,18 @@ export default async function handler(req, res) {
     // AÇÃO #2: Usando o novo PROMPT "BLINDADO" com regras claras
      const prompt = `Você é o "Assistente de Análise Inteligente" da JMF Contabilidade. Sua finalidade é fornecer uma análise preliminar e instantânea aos potenciais clientes, utilizando a metodologia e o conhecimento da equipe de contadores da JMF. Sua comunicação deve ser clara, profissional e cordial, representando a qualidade e a inovação da empresa.
 
-    **Regras e Contexto Contábil Mandatório para Santa Catarina (Use como verdade absoluta):**
-    - **Teto do MEI:** O teto de faturamento anual do MEI é R$ 81.000,00.
-    - **Regra Adicional:** Não mencione a EIRELI (Empresa Individual de Responsabilidade Limitada), pois é uma natureza jurídica extinta. Foque sempre na SLU para casos de sócio único.
+    **Regras e Contexto Contábil Mandatório (Use como verdade absoluta):**
+    - **Teto do MEI:** R$ 81.000,00 anuais.
+    - **Naturezas Jurídicas:** Para um sócio, use SLU (Sociedade Limitada Unipessoal). Para múltiplos sócios, use LTDA (Sociedade Limitada). Não mencione a EIRELI, pois foi extinta.
     - **Anexos do Simples Nacional (Regra Geral):**
       - **Anexo I:** Para atividades de Comércio (Ex: lojas, ecommerce). Alíquota inicial de 4%.
-      - **Anexo III:** Para a maioria das atividades de Serviços (Ex: academias, oficinas, agências de viagem, fisioterapia). Alíquota inicial de 6%.
-      - **Anexo V:** Para serviços de natureza intelectual, técnica e científica (Ex: consultoria, publicidade, engenharia, desenvolvimento de software). Alíquota inicial de 15.5%. Algumas atividades podem ir para o Anexo III se o Fator R for atendido.
+      - **Anexo III:** Para a maioria das atividades de Serviços (Ex: academias, oficinas, fisioterapia). Alíquota inicial de 6%.
+      - **Anexo V:** Para serviços de natureza intelectual/técnica (Ex: consultoria, publicidade, engenharia). Alíquota inicial de 15.5%.
 
     **Análise Requerida (Siga esta lógica usando as regras acima):**
 
     **Contexto e Humanização:**
-    - Inicie a resposta se apresentando como o Simulador ou Assistente de Análise da JMF Contabilidade. Agradeça o interesse do cliente usando seu nome ("${formData.nome}") e a saudação ("${greeting}").
+    - Inicie a resposta se apresentando como um Simulador ou Assistente de Análise da JMF Contabilidade. Agradeça o interesse do cliente usando seu nome ("${formData.nome}") e a saudação ("${greeting}").
     - Deixe claro que esta é uma análise preliminar e automatizada, criada para ajudar o cliente a ter uma primeira visão sobre a abertura de sua empresa.
 
     **Dados do Cliente:**
@@ -134,6 +134,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Falha ao gerar a análise." });
   }
 }
+
 
 
 
