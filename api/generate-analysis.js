@@ -3,13 +3,12 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Função para enviar o lead para o Formspree
+// (A função sendLeadToFormspree permanece a mesma)
 async function sendLeadToFormspree(data, endpointUrl) {
     if (!endpointUrl) {
         console.error("URL do Formspree não configurada no servidor.");
         return;
     }
-
     try {
         const response = await fetch(endpointUrl, {
             method: 'POST',
@@ -26,29 +25,22 @@ async function sendLeadToFormspree(data, endpointUrl) {
     }
 }
 
-// NOVO: Função para obter a saudação correta baseada no fuso horário de Brasília
+// (A função getGreeting permanece a mesma)
 function getGreeting() {
     const now = new Date();
     const options = { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false };
     const hour = parseInt(new Intl.DateTimeFormat('pt-BR', options).format(now), 10);
-
-    if (hour >= 5 && hour < 12) {
-        return "Bom dia";
-    } else if (hour >= 12 && hour < 18) {
-        return "Boa tarde";
-    } else {
-        return "Boa noite";
-    }
+    if (hour >= 5 && hour < 12) return "Bom dia";
+    if (hour >= 12 && hour < 18) return "Boa tarde";
+    return "Boa noite";
 }
 
-// Função principal que lida com a requisição do site
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   const formData = req.body;
-  // ATUALIZADO: Verificação para incluir o nome
   if (!formData.nome || !formData.atividade || !formData.cidade || !formData.socios) {
       return res.status(400).json({ error: "Dados do formulário incompletos." });
   }
@@ -62,55 +54,56 @@ export default async function handler(req, res) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-    // NOVO: Obtendo a saudação dinâmica
+    // AÇÃO #1: Usando o modelo PRO para máxima precisão
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
     const greeting = getGreeting();
     
-    // NOVO PROMPT - Mais dinâmico e inteligente
-    const prompt = `Aja como um contador consultor sênior da JMF Contabilidade, especialista em abertura de empresas em Santa Catarina. Sua tarefa é criar uma análise personalizada, calorosa e precisa para um potencial cliente.
+    // AÇÃO #2: Usando o novo PROMPT "BLINDADO" com regras claras
+    const prompt = `Aja como um contador consultor sênior da JMF Contabilidade. Seja preciso, confiável e demonstre profundo conhecimento da realidade de Santa Catarina.
+
+    **Regras e Contexto Contábil Mandatório para Santa Catarina (Use como verdade absoluta):**
+    - **Teto do MEI:** O teto de faturamento anual do MEI é R$ 81.000,00. Qualquer valor acima disso o desqualifica.
+    - **Anexos do Simples Nacional (Regra Geral):**
+      - **Anexo I:** Para atividades de Comércio (Ex: ecommerce, lojas de varejo). A alíquota inicial é 4%.
+      - **Anexo III:** Para a maioria das atividades de Serviços (Ex: manutenção, agências de viagem, academias). A alíquota inicial é 6%.
+      - **Anexo V:** Para serviços de natureza intelectual, técnica e científica (Ex: engenharia, consultoria, publicidade, desenvolvimento de software). A alíquota inicial é 15.5%. O Fator R pode mover algumas dessas atividades para o Anexo III.
+
+    **Análise Requerida (Siga esta lógica usando as regras acima):**
 
     **Contexto e Humanização:**
     - Inicie a resposta de forma pessoal e amigável. Use a saudação "${greeting}" e o nome do cliente, "${formData.nome}".
-    - Demonstre empatia, reconhecendo que abrir uma empresa é um passo importante.
 
-    **Dados do Cliente para Análise:**
-    - Nome do Cliente: ${formData.nome}
+    **Dados do Cliente:**
+    - Nome: ${formData.nome}
     - Atividade Principal: ${formData.atividade}
     - Cidade da Sede: ${formData.cidade}
     - Faturamento Mensal Estimado: R$ ${formData.faturamentoMensal || 'Não informado'}
-    - Número de Sócios: ${formData.socios}
-    - Número de Funcionários: ${formData.funcionarios}
+    - Sócios: ${formData.socios}
 
-    **Análise Técnica Requerida (Siga esta lógica):**
+    **1. Natureza Jurídica:**
+    - Calcule o faturamento anual.
+    - Compare-o estritamente com o teto do MEI de R$ 81.000,00. Se ultrapassar, descarte o MEI e explique o porquê.
+    - Recomende SLU para 1 sócio (acima do teto MEI) ou LTDA para 2+ sócios, explicando a proteção patrimonial.
 
-    **1. Natureza Jurídica (Tipo de Empresa):**
-    - Verifique o faturamento anual (faturamento mensal * 12) contra o **teto de faturamento ATUAL do MEI (Microempreendedor Individual)** que você conhece em sua base de dados.
-    - Se o faturamento ultrapassar o teto atual do MEI, **NÃO sugira o MEI**. Explique brevemente o porquê.
-    - Se for 1 sócio e o faturamento estiver acima do teto do MEI, recomende a **SLU (Sociedade Limitada Unipessoal)**, explicando os benefícios da proteção patrimonial.
-    - Se for mais de 1 sócio, recomende a **Sociedade Limitada (LTDA)**.
+    **2. Regime Tributário (Análise Guiada):**
+    - Para a atividade "${formData.atividade}", identifique o Anexo do Simples Nacional **usando as regras mandatórias definidas no início deste prompt.**
+    - Exemplo de raciocínio: "Como sua atividade é ecommerce, ela se enquadra em Comércio, que pertence ao Anexo I do Simples Nacional."
+    - Informe a alíquota inicial correta para o Anexo identificado (Ex: 4% para Anexo I).
+    - Mencione o CNAE mais comum para a atividade, mas deixe claro que a confirmação é um passo da consultoria. Para "ecommerce", o CNAE comum é 47.91-7/01.
 
-    **2. Regime Tributário (Análise Aprofundada):**
-    - Com base na atividade "${formData.atividade}", **pesquise em sua base de dados o código CNAE (Classificação Nacional de Atividades Econômicas) mais comum e adequado.**
-    - Uma vez identificado o CNAE provável, **determine o Anexo correto do Simples Nacional** para essa atividade.
-    - **Justifique a escolha do Anexo** (ex: "atividades de desenvolvimento de software se enquadram no Anexo V, mas podem ir para o Anexo III se o Fator R for atendido").
-    - Com base no Anexo, **informe a alíquota inicial da primeira faixa** de faturamento do Simples Nacional. Deixe claro que esta é uma estimativa inicial.
-    - **NÃO sugira genericamente "Anexo III ou IV".** Faça uma análise real e apresente a conclusão mais provável.
+    **3. Próximos Passos Essenciais:**
+    - Mantenha a lista de passos: JUCESC, definição do CNAE com ajuda da JMF, e o Certificado Digital com os parceiros da JMF.
 
-    **3. Próximos Passos Essenciais em Santa Catarina:**
-    - Mantenha a lista de passos práticos, incluindo a **JUCESC**, a importância da definição correta do CNAE (que você acabou de analisar) e a emissão do **Certificado Digital (e-CNPJ)**, mencionando que a JMF Contabilidade cuida disso através de parceiros.
+    **Conclusão e Aviso Legal:**
+    - Conclua com a frase amigável sobre a proposta comercial.
+    - Adicione o aviso legal completo no final.
 
-    **Conclusão:**
-    - Finalize com uma frase amigável, informando que a equipe da JMF Contabilidade já está preparando uma proposta comercial detalhada e personalizada.
-
-    **IMPORTANTE:** Ao final de TODA a resposta, adicione o seguinte aviso legal, sem nenhuma alteração:
     ---
     *Aviso Legal: Esta análise é uma simulação preliminar gerada por Inteligência Artificial com base nos dados fornecidos. Ela não substitui a consultoria de um profissional de contabilidade e está sujeita a confirmação. Os valores, CNAEs e regimes sugeridos são estimativas e podem variar.*`;
 
-
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const analiseGerada = await response.text();
+    const analiseGerada = await result.response.text();
 
     const leadData = {
         subject: `Novo Lead (Simulador JMF): ${formData.nome}`,
@@ -121,11 +114,7 @@ export default async function handler(req, res) {
     
     await sendLeadToFormspree(leadData, formspreeEndpoint);
     
-    const respostaParaSite = {
-      analise: analiseGerada
-    };
-
-    return res.status(200).json(respostaParaSite);
+    return res.status(200).json({ analise: analiseGerada });
 
   } catch (error) {
     console.error("Erro ao chamar a API do Gemini:", error);
