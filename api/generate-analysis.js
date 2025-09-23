@@ -73,7 +73,7 @@ export default async function handler(req, res) {
     **Análise Requerida (Siga esta lógica usando as regras acima):**
 
     **Contexto e Humanização:**
-    - Inicie a resposta se apresentando como um Simulador ou Assistente de Análise da JMF Contabilidade. Agradeça o interesse do cliente usando seu nome ("${formData.nome}") e a saudação ("${greeting}").
+    - Inicie a resposta de forma cordial. Use a frase "Sou o Assistente de Análise Inteligente da JMF Contabilidade" ou similar, evitando dizer "Meu nome é...". Agradeça o interesse do cliente usando seu nome ("${formData.nome}") e a saudação ("${greeting}").
     - Deixe claro que esta é uma análise preliminar e automatizada, criada para ajudar o cliente a ter uma primeira visão sobre a abertura de sua empresa.
 
     **Dados do Cliente:**
@@ -96,10 +96,14 @@ export default async function handler(req, res) {
       - Para a categoria identificada, forneça **um ou dois exemplos de CNAEs plausíveis** para ilustrar o conceito, deixando claro que são apenas exemplos.
       - Por exemplo, se a atividade for "agência de marketing", classifique como Serviços (Anexo III/V), explique sobre o Fator R e dê como exemplos o CNAE 7311-4/00 (Agências de publicidade) e 7319-0/04 (Consultoria em publicidade).
       - Se a atividade for "venda de sapatos", classifique como Comércio (Anexo I) e dê como exemplo o CNAE 4782-2/01 (Comércio varejista de calçados).
-    - **Passo 4: Chame para a Ação.** Reforce que a equipe da JMF Contabilidade tem a expertise para ajudar a definir o(s) código(s) perfeito(s) para o negócio dele.
+      - **Passo 4: Chame para a Ação.** Informe ao cliente que a equipe de especialistas da JMF Contabilidade já recebeu os dados e entrará em contato em breve para aprofundar a análise. Finalize com uma frase proativa, como: "Se desejar, você pode se adiantar e nos chamar diretamente em nosso WhatsApp (47) 3326-5123 para agilizar o processo."
 
     **3. Próximos Passos Essenciais:**
-    - Mantenha a lista de passos práticos, incluindo a **JUCESC**, a importância da definição correta do CNAE (que você acabou de analisar) e a emissão do **Certificado Digital (e-CNPJ)**, mencionando que a JMF Contabilidade cuida disso através de parceiros.
+       - Detalhe os passos práticos na ordem correta e de forma informativa. Siga esta estrutura:
+      - **1. Consulta de Viabilidade na Prefeitura:** Explique que o primeiro passo prático é a consulta de viabilidade. Este processo verifica junto à prefeitura da cidade sede ("${formData.cidade}") se a atividade da empresa é permitida no endereço desejado. É a "luz verde" oficial para poder avançar com a abertura.
+      - **2. Registro na JUCESC (Junta Comercial de Santa Catarina):** Com a viabilidade aprovada, o próximo passo é o registro oficial do Contrato Social na Junta Comercial. Explique que é a partir deste registro que o CNPJ da empresa é criado, dando existência legal ao negócio.
+      - **3. Definição Estratégica do CNAE:** Reforce que a escolha dos códigos de atividade (CNAEs) é uma das etapas mais estratégicas. Explique que uma definição correta, feita pela equipe da JMF, garante que a empresa pague o menor imposto possível dentro da lei e evite problemas fiscais no futuro.
+      - **4. Emissão do Certificado Digital (e-CNPJ):** Descreva-o como a identidade digital e assinatura eletrônica da empresa. Explique que ele é indispensável para emitir notas fiscais, acessar portais do governo e cumprir obrigações. Mencione que a JMF Contabilidade possui parceiros para agilizar a emissão.
 
     **Conclusão e Aviso Legal:**
     - Conclua com uma frase amigável e adicione o aviso legal completo.
@@ -134,6 +138,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Falha ao gerar a análise." });
   }
 }
+
 
 
 
