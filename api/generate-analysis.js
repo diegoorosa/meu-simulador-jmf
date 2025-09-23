@@ -3,21 +3,6 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Função para obter a saudação correta baseada no fuso horário de Brasília
-function getGreeting() {
-    const now = new Date();
-    const options = { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false };
-    const hour = parseInt(new Intl.DateTimeFormat('pt-BR', options).format(now), 10);
-
-    if (hour >= 5 && hour < 12) {
-        return "Bom dia";
-    } else if (hour >= 12 && hour < 18) {
-        return "Boa tarde";
-    } else {
-        return "Boa noite";
-    }
-}
-
 // Função para enviar o lead para o Formspree
 async function sendLeadToFormspree(data, endpointUrl) {
     if (!endpointUrl) {
@@ -41,6 +26,20 @@ async function sendLeadToFormspree(data, endpointUrl) {
     }
 }
 
+// NOVO: Função para obter a saudação correta baseada no fuso horário de Brasília
+function getGreeting() {
+    const now = new Date();
+    const options = { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false };
+    const hour = parseInt(new Intl.DateTimeFormat('pt-BR', options).format(now), 10);
+
+    if (hour >= 5 && hour < 12) {
+        return "Bom dia";
+    } else if (hour >= 12 && hour < 18) {
+        return "Boa tarde";
+    } else {
+        return "Boa noite";
+    }
+}
 
 // Função principal que lida com a requisição do site
 export default async function handler(req, res) {
@@ -49,7 +48,8 @@ export default async function handler(req, res) {
   }
 
   const formData = req.body;
-  if (!formData.atividade || !formData.cidade || !formData.socios) {
+  // ATUALIZADO: Verificação para incluir o nome
+  if (!formData.nome || !formData.atividade || !formData.cidade || !formData.socios) {
       return res.status(400).json({ error: "Dados do formulário incompletos." });
   }
 
@@ -63,6 +63,9 @@ export default async function handler(req, res) {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    // NOVO: Obtendo a saudação dinâmica
+    const greeting = getGreeting();
     
     // NOVO PROMPT - Mais dinâmico e inteligente
     const prompt = `Aja como um contador consultor sênior da JMF Contabilidade, especialista em abertura de empresas em Santa Catarina. Sua tarefa é criar uma análise personalizada, calorosa e precisa para um potencial cliente.
@@ -104,6 +107,7 @@ export default async function handler(req, res) {
     ---
     *Aviso Legal: Esta análise é uma simulação preliminar gerada por Inteligência Artificial com base nos dados fornecidos. Ela não substitui a consultoria de um profissional de contabilidade e está sujeita a confirmação. Os valores, CNAEs e regimes sugeridos são estimativas e podem variar.*`;
 
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const analiseGerada = await response.text();
@@ -136,5 +140,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Falha ao gerar a análise." });
   }
 }
-
-
