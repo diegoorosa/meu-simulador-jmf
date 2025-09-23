@@ -88,9 +88,9 @@ export default async function handler(req, res) {
     - Recomende SLU para 1 sócio (acima do teto MEI) ou LTDA para 2+ sócios.
 
     **2. Regime Tributário (Análise Universal e Consultiva):**
-    - **Passo 1: Classifique a Atividade.** Analise a atividade ("${formData.atividade}") e, usando as "Regras Mandatórias", classifique-a em uma das três categorias: Comércio (Anexo I), Serviços (Anexo III), ou Serviços Intelectuais/Técnicos (Anexo V).
-    - **Passo 2: Informe a Base.** Com base na classificação, informe o Anexo do Simples Nacional e a alíquota inicial. Se for Anexo V, mencione a possibilidade do Fator R.
-    - **Passo 3: Eduque e Exemplifique.**
+    - **Classifique a Atividade.** Analise a atividade ("${formData.atividade}") e, usando as "Regras Mandatórias", classifique-a em uma das três categorias: Comércio (Anexo I), Serviços (Anexo III), ou Serviços Intelectuais/Técnicos (Anexo V).
+    - **Informe a Base.** Com base na classificação, informe o Anexo do Simples Nacional e a alíquota inicial. Se for Anexo V, mencione a possibilidade do Fator R.
+    - **Eduque e Exemplifique.**
       - **NÃO afirme um CNAE específico como sendo "o correto".**
       - Explique que a definição exata do CNAE é um passo crucial da consultoria e depende de detalhes da operação.
       - Para a categoria identificada, forneça **um ou dois exemplos de CNAEs plausíveis** para ilustrar o conceito, deixando claro que são apenas exemplos.
@@ -138,6 +138,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Falha ao gerar a análise." });
   }
 }
+
 
 
 
